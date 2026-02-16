@@ -8,6 +8,32 @@ This Laravel project follows a **strict layered architecture**:
 Controller → Action → Service → Model
 ```
 
+## Code Quality Standards
+
+This project enforces **strict code quality standards** for consistency and maintainability.
+
+### Core Requirements
+
+- **PHP 8.3+** with modern features (readonly properties, Enums, typed properties)
+- **PSR-12** formatting via Laravel Pint
+- **PHPStan Level 8** static analysis
+- **Rector** for automated refactoring
+- **80%+ test coverage** for all new features
+- **`declare(strict_types=1);`** in all PHP files
+
+### Quality Tools
+
+Run these commands before every commit:
+
+```bash
+./vendor/bin/pint              # Format code (PSR-12)
+vendor/bin/phpstan analyse     # Static analysis (Level 8)
+php artisan test               # Run tests
+php artisan test --coverage    # Check coverage
+```
+
+**For complete code style guidelines, see [CODING_STYLE_GUIDELINES.md](../CODING_STYLE_GUIDELINES.md).**
+
 ## Critical Rules for Code Generation
 
 ### 1. Controllers
@@ -149,6 +175,78 @@ class WeddingController extends Controller
 - **DTOs**: `{Verb}{Entity}Data` (e.g., `CreateWeddingData`, `UpdateGuestData`)
 - **FormRequests**: `{Verb}{Entity}Request` (e.g., `CreateWeddingRequest`)
 - **Enums**: `{Entity}Status` or `{Entity}Type` (e.g., `RSVPStatus`, `PaymentStatus`)
+- **Variables/Properties**: camelCase (e.g., `$userId`, `$guestList`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_GUESTS`, `DEFAULT_CAPACITY`)
+
+## Code Style Requirements
+
+### Mandatory in Every PHP File
+
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\Actions;
+
+// All class code here
+```
+
+### Type Declarations
+
+✅ **ALWAYS:**
+- Use typed properties: `public string $name`
+- Use readonly for DTOs: `readonly class CreateWeddingData`
+- Declare return types: `public function execute(): Wedding`
+- Use PHP 8.3 features: constructor property promotion, Enums
+- Use nullable types explicitly: `?string $email`
+
+❌ **NEVER:**
+- Skip `declare(strict_types=1);`
+- Use `mixed` type (unless absolutely necessary)
+- Skip return type declarations
+- Use docblock types instead of native types
+
+### Example DTO
+
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\DTOs;
+
+readonly class CreateWeddingData
+{
+    public function __construct(
+        public int $userId,
+        public string $name,
+        public string $date,
+        public string $venue,
+        public ?int $capacity = null,
+    ) {}
+}
+```
+
+### Example Action
+
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\Actions;
+
+class CreateWeddingAction
+{
+    public function __construct(
+        private WeddingService $weddingService
+    ) {}
+
+    public function execute(CreateWeddingData $data): Wedding
+    {
+        // Implementation
+        return $this->weddingService->create($data);
+    }
+}
+```
 
 ## Testing Approach
 
@@ -352,3 +450,4 @@ For detailed information, see:
 - [ARCHITECTURES_GUIDELINES.md](../ARCHITECTURES_GUIDELINES.md) — Architecture and code structure
 - [TESTING_GUIDELINES.md](../TESTING_GUIDELINES.md) — Comprehensive testing rules and patterns
 - [UI_GUIDELINES.md](../UI_GUIDELINES.md) — UI/UX design principles
+- [CODING_STYLE_GUIDELINES.md](../CODING_STYLE_GUIDELINES.md) — Code style, formatting, and quality standards
