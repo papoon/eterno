@@ -34,7 +34,23 @@ return [
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
-            'database' => env('APP_ENV') === 'testing' ? ':memory:' : env('DB_DATABASE', database_path('database.sqlite')),
+            // Determine sqlite database location. Prefer in-memory when testing.
+            // If CI sets a short DB name (e.g. "eterno"), resolve it to an absolute
+            // path under the project's database directory so SQLite can open it.
+            'database' => (function (): string {
+                $db = env('APP_ENV') === 'testing' ? ':memory:' : env('DB_DATABASE', database_path('database.sqlite'));
+
+                if ($db === ':memory:') {
+                    return $db;
+                }
+
+                // If already an absolute path or a DSN, return as-is.
+                if (str_starts_with($db, '/') || preg_match('#^[a-zA-Z0-9_+-]+://#', $db)) {
+                    return $db;
+                }
+
+                return database_path($db);
+            })(),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
             'busy_timeout' => null,
