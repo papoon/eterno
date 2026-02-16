@@ -55,6 +55,44 @@ Seguindo padrão **Clean Architecture / Laravel Service Layer**:
 
 ---
 
+## 🛠️ Code Quality Tools
+
+This project enforces strict code quality standards for all new code:
+
+### Available Commands
+
+```bash
+# Format code (PSR-12)
+composer pint
+
+# Static analysis (PHPStan Level 8)
+composer phpstan
+
+# Automated refactoring (Rector)
+composer rector
+
+# Run all quality checks + tests
+composer quality
+```
+
+### Configuration Files
+
+- **pint.json** — PSR-12 code formatting rules
+- **phpstan.neon** — PHPStan Level 8 static analysis
+- **rector.php** — PHP 8.3 upgrade and code quality rules
+
+### Before Every Commit
+
+```bash
+composer pint      # Auto-format code
+composer phpstan   # Check for type errors
+composer test      # Run all tests
+```
+
+**For detailed code style guidelines, see [CODING_STYLE_GUIDELINES.md](CODING_STYLE_GUIDELINES.md).**
+
+---
+
 ## ⚙️ Stack Tecnológico
 
 - Laravel 11  
@@ -110,18 +148,28 @@ resources/views/components/
  ├── table.blade.php
  └── metric-card.blade.php
 ```
-📝 Contribuição
-Seguir padrões de arquitetura ([Architecture Guidelines](ARCHITECTURES_GUIDELINES.md))
 
-Seguir regras de UI ([UI Guidelines](UI_GUIDELINES.md))
+---
 
-Seguir regras de testes (TESTING_GUIDELINES.md)
+## 📝 Contribuição
 
-Usar Actions → Services → DTOs
+Before contributing:
 
-Mantém consistência na nomenclatura e estilo de código
+1. **Follow architectural patterns** — [Architecture Guidelines](ARCHITECTURES_GUIDELINES.md)
+2. **Follow UI/UX principles** — [UI Guidelines](UI_GUIDELINES.md)
+3. **Follow testing rules** — [Testing Guidelines](TESTING_GUIDELINES.md)
+4. **Follow code style standards** — [Coding Style Guidelines](CODING_STYLE_GUIDELINES.md)
+5. **Use Actions → Services → DTOs** pattern
+6. **Run quality checks** before committing:
+   ```bash
+   composer pint      # Format code
+   composer phpstan   # Static analysis
+   composer test      # Run tests
+   ```
 
-📊 Roadmap
+---
+
+## 📊 Roadmap
  MVP: casamento único, RSVP, check-in, pagamento único
 
  Fase 2: Multi-evento e B2B para wedding planners
@@ -137,11 +185,10 @@ B2B: assinatura recorrente por plano (Starter / Pro / Enterprise)
 
 Multi-evento → receita previsível e escalável
 
-📚 Documentação
-[Architecture Guidelines](ARCHITECTURES_GUIDELINES.md) — regras de código e camadas
+## 📚 Documentação
 
-[UI Guidelines](UI_GUIDELINES.md) — regras de interface
-
-TESTING_GUIDELINES.md — regras e checklist de testes
-
-[GitHub Copilot Instructions](.github/copilot-instructions.md) — instruções para GitHub Copilot e LLMs
+- **[Architecture Guidelines](ARCHITECTURES_GUIDELINES.md)** — Architecture patterns and layer responsibilities
+- **[UI Guidelines](UI_GUIDELINES.md)** — UI/UX design principles
+- **[Testing Guidelines](TESTING_GUIDELINES.md)** — Comprehensive testing rules and patterns
+- **[Coding Style Guidelines](CODING_STYLE_GUIDELINES.md)** — Code style, formatting, and quality standards
+- **[GitHub Copilot Instructions](.github/copilot-instructions.md)** — Instructions for GitHub Copilot and LLMs
