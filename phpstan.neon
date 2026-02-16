@@ -1,0 +1,16 @@
+parameters:
+    level: 8
+    paths:
+        - app
+        - database
+    excludePaths:
+        - vendor
+        - storage
+        - bootstrap/cache
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # Ignore Laravel magic methods if needed
+        # - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder#'
