@@ -160,6 +160,136 @@ class WeddingController extends Controller
 - **Minimum 80% code coverage** for new features
 - **Test edge cases thoroughly** — limits, invalid data, empty states
 
+## UI Guidelines
+
+This project follows **strict UI/UX design principles** for elegance and consistency.
+
+### Design Principles
+
+1. **Simplicity over feature density** — Less is more
+2. **White space is mandatory** — Generous spacing creates elegance
+3. **Large typography over small dense text** — Readability first
+4. **Soft colors, not aggressive contrast** — Wedding-appropriate palette
+5. **Minimal borders** — Use shadows and spacing
+6. **Rounded corners everywhere** — `rounded-lg` or `rounded-xl`
+7. **Focus on calm and elegance** — This is a wedding product, not a corporate dashboard
+
+### Layout Standards
+
+Every page must follow this structure:
+
+```blade
+<div class="min-h-screen bg-gray-50">
+    <x-navigation />
+    
+    <main class="max-w-5xl mx-auto px-6 py-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Page Title</h1>
+            <p class="mt-2 text-gray-600">Optional description</p>
+        </div>
+        
+        <div class="space-y-8">
+            <x-card>
+                <!-- Content -->
+            </x-card>
+        </div>
+    </main>
+</div>
+```
+
+**Key layout classes:**
+- Container: `max-w-5xl mx-auto px-6 py-8`
+- Section spacing: `space-y-8`
+- Page background: `bg-gray-50`
+- Card background: `bg-white`
+
+### Typography Hierarchy
+
+```blade
+<h1 class="text-3xl font-bold text-gray-900">Page Title</h1>
+<h2 class="text-2xl font-semibold text-gray-800">Section Title</h2>
+<h3 class="text-xl font-medium text-gray-800">Subsection Title</h3>
+<p class="text-base text-gray-700">Body text</p>
+<p class="text-sm text-gray-600">Secondary text</p>
+```
+
+### Color Palette
+
+- **Primary actions**: `bg-rose-500 hover:bg-rose-600 text-white`
+- **Secondary actions**: `bg-white hover:bg-gray-50 text-gray-700 border border-gray-300`
+- **Danger actions**: `bg-red-500 hover:bg-red-600 text-white`
+- **Text colors**: `text-gray-900` (titles), `text-gray-700` (body), `text-gray-600` (secondary)
+- **Backgrounds**: `bg-gray-50` (pages), `bg-white` (cards)
+- **Borders**: `border-gray-200` or `border-gray-300`
+
+### Components
+
+Always use Blade components:
+
+```blade
+<x-button variant="primary">Save</x-button>
+<x-button variant="secondary">Cancel</x-button>
+<x-button variant="danger">Delete</x-button>
+
+<x-card>
+    <x-card-header>Card Title</x-card-header>
+    <x-card-body>Card content</x-card-body>
+</x-card>
+
+<x-input label="Name" name="name" />
+<x-textarea label="Notes" name="notes" />
+```
+
+### Spacing Standards
+
+- **Between sections**: `space-y-8` (32px)
+- **Within sections**: `space-y-4` (16px)
+- **Card padding**: `p-6` (24px)
+- **Button padding**: `px-4 py-2`
+- **Form fields**: `space-y-4`
+
+### UI Generation Rules for LLMs
+
+✅ **Must Do:**
+1. Always use Blade components (`<x-button>`, `<x-card>`)
+2. Follow container structure with `max-w-5xl mx-auto px-6 py-8`
+3. Use semantic spacing (`space-y-8` between sections)
+4. Include focus states on interactive elements
+5. Use correct color palette (rose-500 primary, gray scale)
+6. Include transitions on hover states
+7. Provide empty states for lists
+8. Add loading states for async operations
+9. Use proper typography hierarchy
+10. Center content with `mx-auto`
+
+❌ **Never Do:**
+1. Never use pure black (#000) or aggressive colors
+2. Never skip spacing between sections
+3. Never use small, dense text
+4. Never create layouts wider than `max-w-5xl`
+5. Never use square corners (always `rounded-lg`)
+6. Never skip focus states
+7. Never use inline styles
+8. Never create custom colors outside palette
+9. Never forget responsive design (`md:`, `lg:` prefixes)
+10. Never skip empty states on lists
+
+### Page Checklist
+
+Before completing a page, verify:
+- [ ] Uses `max-w-5xl mx-auto px-6 py-8` container
+- [ ] Sections have `space-y-8` spacing
+- [ ] All buttons use `<x-button>` component
+- [ ] All cards use `<x-card>` component
+- [ ] Typography follows hierarchy
+- [ ] Colors from approved palette
+- [ ] Interactive elements have hover/focus states
+- [ ] Empty states included
+- [ ] Loading states implemented
+- [ ] Generous white space throughout
+
+For detailed UI guidelines, see [UI_GUIDELINES.md](../UI_GUIDELINES.md).
+
 ## Common Mistakes to Avoid
 
 ❌ **DON'T:**
