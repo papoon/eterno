@@ -111,7 +111,7 @@ resources/views/components/
  └── metric-card.blade.php
 ```
 📝 Contribuição
-Seguir padrões de arquitetura ([ARCHITECTURES_GUIDELINES.md](ARCHITECTURES_GUIDELINES.md))
+Seguir padrões de arquitetura ([Architecture Guidelines](ARCHITECTURES_GUIDELINES.md))
 
 Seguir regras de UI (UI_GUIDELINES.md)
 
@@ -138,10 +138,10 @@ B2B: assinatura recorrente por plano (Starter / Pro / Enterprise)
 Multi-evento → receita previsível e escalável
 
 📚 Documentação
-[ARCHITECTURES_GUIDELINES.md](ARCHITECTURES_GUIDELINES.md) — regras de código e camadas
+[Architecture Guidelines](ARCHITECTURES_GUIDELINES.md) — regras de código e camadas
 
 UI_GUIDELINES.md — regras de interface
 
 TESTING_GUIDELINES.md — regras e checklist de testes
 
-[.github/copilot-instructions.md](.github/copilot-instructions.md) — instruções para GitHub Copilot e LLMs
+[GitHub Copilot Instructions](.github/copilot-instructions.md) — instruções para GitHub Copilot e LLMs
