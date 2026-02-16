@@ -10,18 +10,20 @@ All tests must follow these guidelines to ensure consistency, maintainability, a
 
 1. **Use PHPUnit** for all unit and feature tests
 2. **Test Actions and Services first** — Controllers are just orchestrators
-3. **Mock external services** (Stripe, Paddle, email providers)
-4. **Maintain 80%+ code coverage** for new features
-5. **Avoid testing Controllers directly** — They only orchestrate Actions
-6. **Test edge cases thoroughly** — limits, invalid data, empty states, boundary conditions
-7. **Use DTOs as input** for Action tests
-8. **Follow the same layered architecture** in tests as in production code
+3. **Add HTTP/E2E tests** for FormRequest validation, authentication, and critical flows
+4. **Mock external services** (Stripe, Paddle, email providers)
+5. **Maintain 80%+ code coverage** for new features
+6. **Keep Controllers thin** — Don't test controller orchestration, but do test the HTTP layer
+7. **Test edge cases thoroughly** — limits, invalid data, empty states, boundary conditions
+8. **Use DTOs as input** for Action tests
+9. **Follow the same layered architecture** in tests as in production code
 
 ---
 
 ## Testing Architecture
 
 ```
+HTTP/E2E Tests → Controllers → Actions → Services (mocked when needed) → Models
 Feature Tests → Actions → Services (mocked when needed) → Models
 Unit Tests → Services → Models
 ```
@@ -29,15 +31,21 @@ Unit Tests → Services → Models
 ### What to Test
 
 ✅ **Must Test:**
-- Actions (feature tests)
+- Actions (feature tests calling Actions directly)
 - Services (unit tests for complex logic)
+- HTTP endpoints (end-to-end tests for FormRequest validation, authorization, routing)
 - Edge cases and boundary conditions
 - Authorization and permissions
 - Data validation through FormRequests
 - Business rules enforcement
 
+✅ **Optional but Recommended:**
+- End-to-end HTTP tests for critical user flows
+- FormRequest validation rules via HTTP tests
+- Authentication and authorization via HTTP tests
+
 ❌ **Don't Test:**
-- Controllers (they only orchestrate)
+- Controller orchestration logic (keep controllers thin)
 - Blade views (unless testing complex components)
 - Eloquent relationships (unless custom logic involved)
 - Third-party library internals
@@ -92,6 +100,82 @@ Unit tests focus on isolated pieces of logic, primarily in Services.
 
 ---
 
+### HTTP / End-to-End Tests
+
+HTTP tests verify the complete request/response cycle, including routing, middleware, authentication, authorization, and FormRequest validation.
+
+**Location:** `tests/Feature/Http/`
+
+**Naming Convention:** `{Feature}HttpTest.php`
+- Examples: `CreateWeddingHttpTest.php`, `GuestManagementHttpTest.php`
+
+**When to Use HTTP Tests:**
+- Testing FormRequest validation rules
+- Testing authentication and authorization middleware
+- Testing routing and HTTP status codes
+- Testing CSRF protection
+- Testing rate limiting
+- Critical user flows that need end-to-end validation
+
+**Structure:**
+```php
+class CreateWeddingHttpTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /** @test */
+    public function it_validates_required_fields(): void
+    {
+        $user = User::factory()->create();
+        
+        $response = $this->actingAs($user)->post(route('weddings.store'), [
+            'name' => '', // Missing required field
+            'date' => '',
+            'venue' => '',
+        ]);
+        
+        $response->assertSessionHasErrors(['name', 'date', 'venue']);
+    }
+    
+    /** @test */
+    public function it_creates_wedding_with_valid_data(): void
+    {
+        $user = User::factory()->create();
+        
+        $response = $this->actingAs($user)->post(route('weddings.store'), [
+            'name' => 'My Wedding',
+            'date' => '2025-06-15',
+            'venue' => 'Beautiful Venue',
+        ]);
+        
+        $response->assertRedirect();
+        $this->assertDatabaseHas('weddings', [
+            'name' => 'My Wedding',
+            'user_id' => $user->id,
+        ]);
+    }
+    
+    /** @test */
+    public function it_requires_authentication(): void
+    {
+        $response = $this->post(route('weddings.store'), [
+            'name' => 'My Wedding',
+            'date' => '2025-06-15',
+            'venue' => 'Beautiful Venue',
+        ]);
+        
+        $response->assertRedirect(route('login'));
+    }
+}
+```
+
+**Key Differences:**
+- **HTTP Tests**: Test via HTTP requests (`$this->post()`, `$this->get()`, etc.), include validation, auth, routing
+- **Feature Tests**: Test Actions directly via `app(Action::class)->execute()`, focus on business logic
+- **Unit Tests**: Test Services in isolation with mocked dependencies
+
+---
+
 ## Testing Guidelines by Feature
 
 ### 1️⃣ Multi-Event Support
@@ -108,9 +192,9 @@ Unit tests focus on isolated pieces of logic, primarily in Services.
 6. ✅ Duplicate wedding name allowed for different users
 7. ✅ Wedding name unique per user
 
-**Test Type:** Feature / Action test
+**Test Type:** Feature / Action test + HTTP test for validation
 
-**Example Test:**
+**Example Feature Test (Action):**
 ```php
 /** @test */
 public function cannot_create_wedding_exceeding_plan_limit(): void
@@ -127,6 +211,23 @@ public function cannot_create_wedding_exceeding_plan_limit(): void
         venue: 'Test Venue',
         userId: $user->id
     ));
+}
+```
+
+**Example HTTP Test (Validation):**
+```php
+/** @test */
+public function it_validates_required_fields_when_creating_wedding(): void
+{
+    $user = User::factory()->create();
+    
+    $response = $this->actingAs($user)->post(route('weddings.store'), [
+        'name' => '',  // Missing required
+        'date' => '',  // Missing required
+        'venue' => '',  // Missing required
+    ]);
+    
+    $response->assertSessionHasErrors(['name', 'date', 'venue']);
 }
 ```
 
@@ -481,6 +582,12 @@ public function create(): void
 ```
 tests/
 ├── Feature/
+│   ├── Http/
+│   │   ├── CreateWeddingHttpTest.php
+│   │   ├── UpdateWeddingHttpTest.php
+│   │   ├── GuestManagementHttpTest.php
+│   │   ├── RSVPHttpTest.php
+│   │   └── CheckInHttpTest.php
 │   ├── Wedding/
 │   │   ├── CreateWeddingTest.php
 │   │   ├── UpdateWeddingTest.php
@@ -576,7 +683,8 @@ jobs:
 
 When implementing a new feature, ensure:
 
-- [ ] Feature tests written for all Actions
+- [ ] Feature tests written for all Actions (testing business logic)
+- [ ] HTTP tests written for FormRequest validation and authentication
 - [ ] Unit tests written for complex Service logic
 - [ ] Edge cases and boundary conditions tested
 - [ ] Security tests for authorization and input validation
@@ -593,16 +701,25 @@ When implementing a new feature, ensure:
 
 When an LLM (GitHub Copilot, ChatGPT, etc.) generates tests:
 
-1. ✅ **Always generate Action tests** as Feature tests
-2. ✅ **Always use DTOs** as input to Actions
-3. ✅ **Mock external services** (Stripe, Paddle, email)
-4. ✅ **Follow naming conventions** strictly
-5. ✅ **Test edge cases** for every feature
-6. ✅ **Use factories** for test data
-7. ✅ **Assert database state** after mutations
-8. ❌ **Never test Controllers** directly
-9. ❌ **Never skip edge case tests**
-10. ❌ **Never use raw array data** instead of DTOs
+1. ✅ **Always generate Action tests** as Feature tests (testing Actions directly)
+2. ✅ **Generate HTTP tests** for FormRequest validation, authentication, and critical flows
+3. ✅ **Always use DTOs** as input to Actions
+4. ✅ **Mock external services** (Stripe, Paddle, email)
+5. ✅ **Follow naming conventions** strictly
+6. ✅ **Test edge cases** for every feature
+7. ✅ **Use factories** for test data
+8. ✅ **Assert database state** after mutations
+9. ❌ **Never test Controller orchestration logic** (keep controllers thin)
+10. ❌ **Never skip edge case tests**
+11. ❌ **Never use raw array data** instead of DTOs
+
+### Test Type Decision Tree
+
+- **Need to test business logic?** → Feature test calling Action directly
+- **Need to test validation rules?** → HTTP test with invalid data
+- **Need to test authentication/authorization?** → HTTP test without auth
+- **Need to test a Service in isolation?** → Unit test with mocked dependencies
+- **Need to test a critical user flow?** → HTTP test for the complete flow
 
 ---
 
@@ -633,6 +750,7 @@ public function planner_cannot_access_another_planners_wedding(): void
 
 ### Testing Validation
 
+**Action-level validation (DTO validation):**
 ```php
 /** @test */
 public function wedding_requires_valid_date(): void
@@ -646,6 +764,37 @@ public function wedding_requires_valid_date(): void
         venue: 'Test Venue',
         userId: auth()->id()
     ));
+}
+```
+
+**HTTP-level validation (FormRequest validation):**
+```php
+/** @test */
+public function it_validates_wedding_required_fields(): void
+{
+    $user = User::factory()->create();
+    
+    $response = $this->actingAs($user)->post(route('weddings.store'), [
+        'name' => '',  // Required field missing
+        'date' => '',  // Required field missing
+        'venue' => '',  // Required field missing
+    ]);
+    
+    $response->assertSessionHasErrors(['name', 'date', 'venue']);
+}
+
+/** @test */
+public function it_validates_wedding_date_format(): void
+{
+    $user = User::factory()->create();
+    
+    $response = $this->actingAs($user)->post(route('weddings.store'), [
+        'name' => 'My Wedding',
+        'date' => 'invalid-date',  // Invalid date format
+        'venue' => 'Beautiful Venue',
+    ]);
+    
+    $response->assertSessionHasErrors(['date']);
 }
 ```
 
@@ -678,10 +827,12 @@ All new features must have tests following these guidelines. When working with L
 
 1. Reference this document first
 2. Generate tests following these patterns
-3. Ensure 80%+ coverage
-4. Test Actions and Services, not Controllers
-5. Mock external dependencies
-6. Test edge cases thoroughly
+3. Write HTTP tests for validation and authentication
+4. Write Feature tests for business logic (Actions)
+5. Write Unit tests for complex Services
+6. Ensure 80%+ coverage
+7. Mock external dependencies
+8. Test edge cases thoroughly
 
 **Testing is not optional. It is a requirement for all feature development.**
 
