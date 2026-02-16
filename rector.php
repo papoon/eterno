@@ -14,16 +14,16 @@ return RectorConfig::configure()
     ->withSets([
         // PHP 8.3 upgrade rules
         LevelSetList::UP_TO_PHP_83,
-        
+
         // Code quality improvements
         SetList::CODE_QUALITY,
-        
+
         // Type declarations
         SetList::TYPE_DECLARATION,
-        
+
         // Dead code removal
         SetList::DEAD_CODE,
-        
+
         // Early return patterns
         SetList::EARLY_RETURN,
     ])
