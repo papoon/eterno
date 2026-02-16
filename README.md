@@ -1,5 +1,7 @@
 # Wedding Guest Manager
 
+[![CI](https://github.com/papoon/eterno/actions/workflows/ci.yml/badge.svg)](https://github.com/papoon/eterno/actions/workflows/ci.yml)
+
 **Wedding Guest Manager** é uma aplicação web elegante para gerir convidados de casamentos, RSVP online e check-in no dia do evento.  
 A versão B2B suporta wedding planners com múltiplos eventos e planos de assinatura recorrentes.
 
@@ -90,6 +92,29 @@ composer test      # Run all tests
 ```
 
 **For detailed code style guidelines, see [CODING_STYLE_GUIDELINES.md](CODING_STYLE_GUIDELINES.md).**
+
+---
+
+## 🔄 Continuous Integration
+
+This project uses GitHub Actions to automatically run quality checks on every push and pull request:
+
+### CI Pipeline
+
+The CI workflow (`.github/workflows/ci.yml`) runs the following checks:
+
+1. **Tests** — PHPUnit tests on PHP 8.2 and 8.3
+2. **Laravel Pint** — Code style validation (PSR-12)
+3. **PHPStan** — Static analysis (Level 8)
+4. **Rector** — Code quality checks (dry-run)
+
+All checks must pass before code can be merged.
+
+### Viewing CI Results
+
+- CI status is shown on pull requests
+- Click "Details" next to any check to see logs
+- Failed checks will block merging until fixed
 
 ---
 
