@@ -113,7 +113,7 @@ resources/views/components/
 📝 Contribuição
 Seguir padrões de arquitetura ([Architecture Guidelines](ARCHITECTURES_GUIDELINES.md))
 
-Seguir regras de UI (UI_GUIDELINES.md)
+Seguir regras de UI ([UI Guidelines](UI_GUIDELINES.md))
 
 Seguir regras de testes (TESTING_GUIDELINES.md)
 
@@ -140,7 +140,7 @@ Multi-evento → receita previsível e escalável
 📚 Documentação
 [Architecture Guidelines](ARCHITECTURES_GUIDELINES.md) — regras de código e camadas
 
-UI_GUIDELINES.md — regras de interface
+[UI Guidelines](UI_GUIDELINES.md) — regras de interface
 
 TESTING_GUIDELINES.md — regras e checklist de testes
 
