@@ -156,6 +156,9 @@ class WeddingController extends Controller
 - **Mock Services** when testing Actions
 - **Focus on business behavior**, not implementation details
 - Avoid testing Controllers directly
+- **Always follow** [TESTING_GUIDELINES.md](../TESTING_GUIDELINES.md) for comprehensive testing rules
+- **Minimum 80% code coverage** for new features
+- **Test edge cases thoroughly** — limits, invalid data, empty states
 
 ## Common Mistakes to Avoid
 
@@ -215,4 +218,7 @@ class WeddingService {
 4. Keep services focused and reusable
 5. Use dependency injection everywhere
 
-For detailed information, see [ARCHITECTURES_GUIDELINES.md](../ARCHITECTURES_GUIDELINES.md)
+For detailed information, see:
+- [ARCHITECTURES_GUIDELINES.md](../ARCHITECTURES_GUIDELINES.md) — Architecture and code structure
+- [TESTING_GUIDELINES.md](../TESTING_GUIDELINES.md) — Comprehensive testing rules and patterns
+- [UI_GUIDELINES.md](../UI_GUIDELINES.md) — UI/UX design principles

@@ -184,6 +184,9 @@ All status fields must use PHP Enums.
 - **Mock Services** if needed
 - **Avoid testing Controllers** directly
 - **Focus tests** on business behavior
+- **Follow comprehensive testing rules** in [TESTING_GUIDELINES.md](TESTING_GUIDELINES.md)
+- **Minimum 80% code coverage** for new features
+- **Test edge cases thoroughly** — limits, invalid data, empty states, boundary conditions
 
 ---
 
