@@ -12,6 +12,8 @@ Controller → Action → Service → Model
 
 This project enforces **strict code quality standards** for consistency and maintainability.
 
+> **Important:** These standards apply to **all new code** and files being modified. Apply these rules when creating new features or editing existing files.
+
 ### Core Requirements
 
 - **PHP 8.3+** with modern features (readonly properties, Enums, typed properties)

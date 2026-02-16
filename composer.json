@@ -18,7 +18,9 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^11.5.3",
+        "rector/rector": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -48,6 +50,20 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "pint": [
+            "./vendor/bin/pint"
+        ],
+        "phpstan": [
+            "./vendor/bin/phpstan analyse --level=8"
+        ],
+        "rector": [
+            "./vendor/bin/rector process"
+        ],
+        "quality": [
+            "@pint",
+            "@phpstan",
+            "@test"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

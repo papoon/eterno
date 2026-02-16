@@ -4,6 +4,8 @@ This document defines coding standards and quality guidelines for the **Eterno W
 
 **Goal:** High-quality, maintainable, consistent code, compatible with **PHP 8.3**, **Laravel 11**, and LLM-assisted development.
 
+> **Note:** These guidelines apply to **all new code**. Existing code should be updated gradually during refactoring or when making changes to specific files.
+
 ---
 
 ## 1️⃣ PHP Version Requirements
@@ -456,6 +458,34 @@ composer require --dev rector/rector
 ### Pint (Already Installed)
 
 Laravel Pint is included with Laravel by default.
+
+---
+
+## 🔄 Gradual Adoption Strategy
+
+These guidelines apply to **all new code** starting immediately. For existing code:
+
+### When to Apply These Standards
+
+✅ **Apply when:**
+- Creating new files (Actions, DTOs, Services, Controllers)
+- Making significant changes to existing files
+- Refactoring legacy code
+- Adding new features or fixing bugs
+
+⏳ **Defer for later:**
+- Files you're not actively changing
+- Large-scale reformatting (do in dedicated refactoring PRs)
+- Third-party code or generated files
+
+### Gradual Migration
+
+1. **Start with new code**: All new files follow these guidelines 100%
+2. **Touch and improve**: When editing old files, add `declare(strict_types=1);`, type hints, and format with Pint
+3. **Dedicated refactoring**: Schedule periodic refactoring sessions to modernize old code
+4. **Use Rector**: Run Rector to automatically upgrade PHP version features
+
+**Goal:** All code follows these standards within 6 months of guideline adoption.
 
 ---
 
