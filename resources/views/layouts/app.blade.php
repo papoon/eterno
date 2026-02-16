@@ -12,7 +12,16 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @php
+            $manifestExists = file_exists(public_path('build/manifest.json'));
+        @endphp
+
+        @if ($manifestExists)
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @else
+            <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+            <script src="{{ asset('js/app.js') }}" defer></script>
+        @endif
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-50">
