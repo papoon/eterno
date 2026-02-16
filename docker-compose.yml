@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8090:8000"
+      # Expose Xdebug to the host on port 9999 so VS Code can connect.
+      # Container-side Xdebug usually listens on 9003; map 9999 (host) -> 9003 (container).
+      - "9090:9003"
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=eterno
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+      # Xdebug settings: tell Xdebug to start in debug mode and connect to the
+      # host (macOS) at host.docker.internal on port 9999 (what VS Code listens on).
+      - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9090
+    extra_hosts:
+      - "host.docker.internal:host-gateway" 
+    depends_on:
+      - db
+      - mailhog
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: eterno
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1026:1025"
+      - "8026:8025"
+
+volumes:
+  db_data:
